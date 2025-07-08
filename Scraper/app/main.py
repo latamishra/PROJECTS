@@ -15,6 +15,7 @@ from app.mock_data import generate_mock_offers
 from fastapi.concurrency import run_in_threadpool
 import concurrent.futures
 from contextlib import asynccontextmanager
+from mangum import Mangum
 
 # Set the asyncio event loop policy immediately for Windows
 if os.name == 'nt':
@@ -35,6 +36,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+handler = Mangum(app)
 
 # Add CORS middleware
 app.add_middleware(
