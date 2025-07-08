@@ -7,3 +7,10 @@ pydantic
 httpx
 pytest
 requests
+beautifulsoup4
+selenium
+webdriver-manager
+lxml
+fuzzywuzzy
+python-levenshtein
+tenacity
