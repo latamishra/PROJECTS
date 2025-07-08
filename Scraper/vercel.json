@@ -1,15 +1,48 @@
 {
   "version": 2,
   "builds": [
-    { "src": "app/main.py", "use": "@vercel/python" },
-    { "src": "static/**", "use": "@vercel/static" }
+    {
+      "src": "app/main.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "static/**",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/compare", "dest": "app/main.py" },
-    { "src": "/countries", "dest": "app/main.py" },
-    { "src": "/health", "dest": "app/main.py" },
-    { "src": "/test", "dest": "app/main.py" },
-    { "src": "/static/(.*)", "dest": "/static/$1" },
-    { "src": "/", "dest": "/static/index.html" }
-  ]
+    {
+      "src": "/compare",
+      "dest": "app/main.py"
+    },
+    {
+      "src": "/countries",
+      "dest": "app/main.py"
+    },
+    {
+      "src": "/health",
+      "dest": "app/main.py"
+    },
+    {
+      "src": "/test",
+      "dest": "app/main.py"
+    },
+    {
+      "src": "/",
+      "dest": "app/main.py"
+    },
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    }
+  ],
+  "functions": {
+    "app/main.py": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "PYTHONPATH": ".",
+    "GOOGLE_API_KEY": "@google_api_key"
+  }
 }
