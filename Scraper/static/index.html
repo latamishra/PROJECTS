@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Universal Price Comparison Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; background: #f9f9f9; }
+    h1 { color: #2c3e50; }
+    .container { max-width: 600px; margin: auto; background: #fff; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px #ddd; }
+    label { display: block; margin-top: 1em; }
+    input { width: 100%; padding: 0.5em; margin-top: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 1em; padding: 0.7em 2em; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    button:disabled { background: #aaa; }
+    .results { margin-top: 2em; }
+    .offer { padding: 1em; margin-bottom: 1em; background: #f0f4f8; border-radius: 6px; }
+    .offer a { color: #007bff; text-decoration: none; }
+    .error { color: red; margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Universal Price Comparison Tool</h1>
+    <form id="compare-form">
+      <label for="country">Country Code (e.g., US, IN):</label>
+      <input type="text" id="country" name="country" required placeholder="Enter country code">
+
+      <label for="query">Product Query:</label>
+      <input type="text" id="query" name="query" required placeholder="e.g., iPhone 16 Pro, 128GB">
+
+      <button type="submit">Compare Prices</button>
+    </form>
+    <div class="error" id="error"></div>
+    <div class="results" id="results"></div>
+  </div>
+  <script>
+    const form = document.getElementById('compare-form');
+    const resultsDiv = document.getElementById('results');
+    const errorDiv = document.getElementById('error');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      resultsDiv.innerHTML = '';
+      errorDiv.textContent = '';
+      const country = document.getElementById('country').value.trim();
+      const query = document.getElementById('query').value.trim();
+
+      if (!country || !query) {
+        errorDiv.textContent = "Please fill in both fields.";
+        return;
+      }
+
+      try {
+        const response = await fetch('/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ country, query })
+        });
+        if (!response.ok) throw new Error(await response.text());
+        const data = await response.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          resultsDiv.innerHTML = "<p>No offers found.</p>";
+          return;
+        }
+        resultsDiv.innerHTML = data.map(offer => `
+          <div class="offer">
+            <strong>${offer.productName || 'Product'}</strong><br>
+            <span>Price: <b>${offer.price} ${offer.currency}</b></span><br>
+            <a href="${offer.link}" target="_blank">View Offer</a>
+          </div>
+        `).join('');
+      } catch (err) {
+        errorDiv.textContent = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

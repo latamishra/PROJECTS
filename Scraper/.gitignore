@@ -1,5 +1,5 @@
 # Ignore virtual environments
-venv/
+scrape_venv/
 
 # Ignore environment variables
 .env
